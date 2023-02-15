@@ -1,0 +1,125 @@
+﻿<Window x:Class="DailyNotebookApp.CreateTaskWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DailyNotebookApp"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="New Task" Height="630" Width="588"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Loaded="Window_Loaded" WindowStyle="None">
+    <Grid Background="#ffdadada">
+        <Border Margin="15" Background="White" VerticalAlignment="Center" Padding="30" CornerRadius="20">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="30" Color="LightGray" ShadowDepth="0"/>
+            </Border.Effect>
+
+            <Grid x:Name="CreateTaskWindowGrid">
+                <StackPanel Width="422" HorizontalAlignment="Left">
+                    <TextBlock HorizontalAlignment="Left" Margin="0,0,0,21" Text="New Task" FontSize="36" FontWeight="Bold"
+                                   Style="{StaticResource MaterialDesignBody1TextBlock}" Foreground="#FF673AB7"/>
+
+                    <TextBox x:Name="ShortDescriptionTextBox" materialDesign:HintAssist.Hint="Short description"
+                                 FontSize="16" Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                 Text="{Binding ShortDescription, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Grid>
+                        <TextBlock HorizontalAlignment="Left" Margin="0,24,0,0" Text="Finish to: "
+                                       Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                        <DatePicker x:Name="FinishToDatePicker" HorizontalAlignment="Center"
+                                        Margin="0,24,106,0" Width="153"
+                                        IsTodayHighlighted="True" FontSize="16"
+                                        SelectedDate="{Binding FinishToDate, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBox x:Name="FinishToHoursTextBox" HorizontalAlignment="Right"
+                                     materialDesign:HintAssist.Hint="Hours" FontSize="16"
+                                     Margin="0,0,113,0" Width="60" MaxLength="2"
+                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                     Text="{Binding FinishToHour, UpdateSourceTrigger=PropertyChanged}"
+                                     TextChanged="FinishToHoursTextBox_TextChanged"/>
+                        <TextBlock HorizontalAlignment="Right" Margin="0,20,85,0" Text="h : "
+                                       Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                        <TextBox x:Name="FinishToMinutesTextBox" HorizontalAlignment="Right"
+                                     materialDesign:HintAssist.Hint="Minutes" FontSize="16"
+                                     Margin="0,0,20,0" Width="60" MaxLength="2"
+                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                     Text="{Binding FinishToMinutes, UpdateSourceTrigger=PropertyChanged}"
+                                     TextChanged="FinishToMinutesTextBox_TextChanged"/>
+                        <TextBlock HorizontalAlignment="Right" Margin="0,20,0,0" Text="m"
+                                       Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                    </Grid>
+                    <Grid Margin="0,20,0,0">
+                        <TextBlock HorizontalAlignment="Left" Margin="0,5,0,0" Text="Priority: "
+                                       Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                        <ComboBox x:Name="PriorityComboBox" HorizontalAlignment="Right"
+                                      Width="200" Height="40" FontSize="16"
+                                      SelectedItem="{Binding Priority, UpdateSourceTrigger=PropertyChanged}">
+                        </ComboBox>
+                    </Grid>
+                    <Grid Margin="0,20,0,0">
+                        <TextBlock HorizontalAlignment="Left" Margin="0,5,0,0" Text="Type of task: "
+                                       Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                        <ComboBox x:Name="TypeOfTaskComboBox" HorizontalAlignment="Right"
+                                      Width="200" Height="40" FontSize="16"
+                                      SelectedItem="{Binding TypeOfTask, UpdateSourceTrigger=PropertyChanged}">
+                        </ComboBox>
+                    </Grid>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                        <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" 
+                                       Text="Creation date:   "/>
+                        <TextBlock x:Name="CreationDateTextBlock"
+                                       Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+                    </StackPanel>
+
+                    <Grid Margin="0,20,0,0">
+                        <Button x:Name="СreateButton" Width="74" Height="30"
+                                    Margin="5,5,0,5" HorizontalAlignment="Right"
+                                    Content="Create" Click="СreateButton_Click"/>
+                        <Button x:Name="CancelButton" Width="74" Height="30"
+                                    Margin="5,5,94,5" HorizontalAlignment="Right"
+                                    Content="Cancel" Click="CancelButton_Click"/>
+                    </Grid>
+                </StackPanel>
+
+                <Expander x:Name="AdditionalInfoExpander" HorizontalAlignment="Right"
+                              Padding="5" ExpandDirection="Right"
+                              Expanded="AdditionalInfoExpander_Expanded"
+                              Collapsed="AdditionalInfoExpander_Collapsed">
+                    <StackPanel MinWidth="412">
+                        <TextBox x:Name="DetailedDescriptionTextBox" Height="120"
+                                     SpellCheck.IsEnabled="True" TextWrapping="Wrap"
+                                     materialDesign:HintAssist.Hint="Detailed task" FontSize="16"
+                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}" Width="412"
+                                     Text="{Binding DetailedDescription, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Grid x:Name="DateRangeGrid">
+                            <TextBlock HorizontalAlignment="Left" Margin="0,24,0,0" Text="Date range: "
+                                           Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                            <DatePicker x:Name="DateRangeFirstDatePicker" HorizontalAlignment="Center"
+                                            Margin="0,24,30,0" Width="120"
+                                            IsTodayHighlighted="True" FontSize="16"
+                                            SelectedDate="{Binding Start, UpdateSourceTrigger=PropertyChanged}"
+                                            SelectedDateChanged="DateRangeFirstDatePicker_SelectedDateChanged"/>
+                            <TextBlock HorizontalAlignment="Right" Margin="0,24,137,0" Text="-"
+                                           Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                            <DatePicker x:Name="DateRangeLastDatePicker" HorizontalAlignment="Right"
+                                            Margin="0,24,0,0" Width="120"
+                                            IsTodayHighlighted="True" FontSize="16"
+                                            SelectedDate="{Binding End, UpdateSourceTrigger=PropertyChanged}"
+                                            SelectedDateChanged="DateRangeLastDatePicker_SelectedDateChanged"/>
+                        </Grid>
+
+                        <Grid Margin="0,10,0,0">
+                            <TextBlock Text="Subtasks: " HorizontalAlignment="Left"
+                                           Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                        </Grid>
+
+                        <ScrollViewer MaxHeight="170">
+                            <Grid x:Name="SubtasksGrid">
+                            </Grid>
+                        </ScrollViewer>
+                    </StackPanel>
+                </Expander>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
