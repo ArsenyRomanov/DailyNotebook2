@@ -1,0 +1,85 @@
+﻿<Window x:Class="DailyNotebook.AllFiltersWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DailyNotebook"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="AllFiltersWindow" Height="450" Width="900"
+        WindowStartupLocation="Manual" ResizeMode="NoResize" WindowStyle="None" Loaded="Window_Loaded">
+    <Grid Background="#ffdadada">
+        <Border Margin="30" Background="White" VerticalAlignment="Center" Padding="25" CornerRadius="20">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="30" Color="LightGray" ShadowDepth="0"/>
+            </Border.Effect>
+
+            <Grid>
+                <StackPanel Width="350" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <TextBlock HorizontalAlignment="Left" Text="Filters" FontSize="26" FontWeight="Bold"
+                               Style="{StaticResource MaterialDesignBody1TextBlock}" Foreground="#FF673AB7"/>
+                    <TextBox x:Name="ShortDescriptionTextBox" materialDesign:HintAssist.Hint="Short description is"
+                             FontSize="16" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                    <Grid Margin="0,15,0,0">
+                        <TextBlock Text="IsCompleted:" FontSize="16" Margin="0,3,0,0" HorizontalAlignment="Left"
+                                   Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                        <ComboBox x:Name="IsCompletedComboBox" FontSize="16" Width="150" HorizontalAlignment="Right"/>
+                    </Grid>
+                    <Grid Margin="0,15,0,0" >
+                        <DatePicker x:Name="CreationDatePicker" Width="150" HorizontalAlignment="Left" FontSize="16"
+                                    materialDesign:HintAssist.Hint="Creation date is"/>
+                        <DatePicker x:Name="FinishToDatePicker" Width="150" HorizontalAlignment="Right" FontSize="16" materialDesign:HintAssist.Hint="Finish date is"/>
+                    </Grid>
+                    <Grid Margin="0,15,0,0" >
+                        <TextBox x:Name="FinishToHourTextBox" Width="150" HorizontalAlignment="Left"
+                                 materialDesign:HintAssist.Hint="FinishToHour is" FontSize="16"
+                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                        <TextBox x:Name="FinishToMinutesTextBox" Width="150" HorizontalAlignment="Right"
+                                 materialDesign:HintAssist.Hint="FinishToMinutes is" FontSize="16"
+                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                    </Grid>
+                    <Grid Margin="0,15,0,0">
+                        <TextBlock HorizontalAlignment="Left" Margin="0,5,0,0" Text="Priority is:" FontSize="16"
+                                   Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                        <ComboBox x:Name="PriorityComboBox" HorizontalAlignment="Right" Width="150" FontSize="16"/>
+                    </Grid>
+                    <Grid Margin="0,15,0,0">
+                        <TextBlock HorizontalAlignment="Left" Margin="0,5,0,0" Text="Type of task is:" FontSize="16"
+                                   Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                        <ComboBox x:Name="TypeOfTaskComboBox" HorizontalAlignment="Right" Width="150" FontSize="16"/>
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel Width="350" HorizontalAlignment="Right" VerticalAlignment="Top">
+                    <TextBox x:Name="DetailedDescriptionTextBox" Margin="0,42.58,0,0" Height="120" SpellCheck.IsEnabled="True"
+                             TextWrapping="Wrap" materialDesign:HintAssist.Hint="Detailed description is" FontSize="16"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                    <Grid Margin="0,15,0,0">
+                        <TextBlock HorizontalAlignment="Left" Text="Date range is:"
+                                   Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                        <DatePicker x:Name="DateRangeStartDatePicker" HorizontalAlignment="Center" Margin="0,0,30,0"
+                                    Width="100" IsTodayHighlighted="True" FontSize="16"/>
+                        <TextBlock HorizontalAlignment="Right" Margin="0,0,117,0" Text="-"
+                                   Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                        <DatePicker x:Name="DateRangeEndDatePicker" HorizontalAlignment="Right" Width="100"
+                                    IsTodayHighlighted="True" FontSize="16"/>
+                    </Grid>
+                    <Grid Margin="0,15,0,0">
+                        <TextBlock Text="Have subtasks:" HorizontalAlignment="Left" FontSize="16"
+                                   Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                        <ComboBox x:Name="HasSubtasksComboBox" HorizontalAlignment="Right" Width="150" FontSize="16"/>
+                    </Grid>
+                </StackPanel>
+
+                <Grid Width="350" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                    <Button x:Name="ApplyButton" Width="74" Height="30" Margin="0"
+                            HorizontalAlignment="Right" Content="Apply" Click="ApplyButton_Click"/>
+                    <Button x:Name="CancelButton" Width="74" Height="30" Margin="0,0,94,0"
+                            HorizontalAlignment="Right" Content="Cancel" Click="CancelButton_Click"/>
+                    <Button x:Name="ClearButton" Width="74" Height="30" HorizontalAlignment="Left"
+                            Content="Clear" Click="ClearButton_Click"/>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

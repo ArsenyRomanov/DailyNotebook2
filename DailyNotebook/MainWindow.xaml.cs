@@ -1,8 +1,10 @@
-﻿using DailyNotebookApp.Models;
+﻿using DailyNotebook;
+using DailyNotebook.Services;
+using DailyNotebookApp.Models;
 using DailyNotebookApp.Services;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 
 namespace DailyNotebookApp
@@ -19,6 +21,9 @@ namespace DailyNotebookApp
         public MainWindow()
         {
             InitializeComponent();
+
+            Top = SystemParameters.FullPrimaryScreenHeight - Height;
+            Left = SystemParameters.FullPrimaryScreenWidth - Width;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -40,6 +45,9 @@ namespace DailyNotebookApp
 
             FiltersIsCompleted.ItemsSource = Enum.GetValues(typeof(IsCompletedEnum));
             FiltersIsCompleted.SelectedItem = IsCompletedEnum.All;
+
+            FilterService.FiltersDisabled += FiltersDisabled;
+            FilterService.FiltersEnabled += FiltersEnabled;
 
             NotebookDataGrid.SelectedCellsChanged += NotebookDataGrid_SelectedCellsChanged;
             NotebookDataGrid.MouseDown += NotebookDataGrid_MouseDown;
@@ -174,34 +182,44 @@ namespace DailyNotebookApp
 
         private void FiltersShortDescriptionTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            NotebookDataGrid.ItemsSource = HelpService.FilterCollection(tasks, FiltersShortDescription.Text,
-                                                                               FiltersFinishTo.SelectedDate,
-                                                                               FiltersCreationDate.SelectedDate,
-                                                                               (IsCompletedEnum)FiltersIsCompleted.SelectedItem);
+            FilterService.ShortDescription = FiltersShortDescription.Text;
+            FilterService.FilterCollection(tasks);
         }
 
         private void FiltersFinishTo_SelectedDateChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            NotebookDataGrid.ItemsSource = HelpService.FilterCollection(tasks, FiltersShortDescription.Text,
-                                                                               FiltersFinishTo.SelectedDate,
-                                                                               FiltersCreationDate.SelectedDate,
-                                                                               (IsCompletedEnum)FiltersIsCompleted.SelectedItem);
+            FilterService.FinishToDate = FiltersFinishTo.SelectedDate;
+            FilterService.FilterCollection(tasks);
         }
 
         private void FiltersCreationDate_SelectedDateChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            NotebookDataGrid.ItemsSource = HelpService.FilterCollection(tasks, FiltersShortDescription.Text,
-                                                                               FiltersFinishTo.SelectedDate,
-                                                                               FiltersCreationDate.SelectedDate,
-                                                                               (IsCompletedEnum)FiltersIsCompleted.SelectedItem);
+            FilterService.CreationDate = FiltersCreationDate.SelectedDate;
+            FilterService.FilterCollection(tasks);
         }
 
         private void IsCompletedComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            NotebookDataGrid.ItemsSource = HelpService.FilterCollection(tasks, FiltersShortDescription.Text,
-                                                                               FiltersFinishTo.SelectedDate,
-                                                                               FiltersCreationDate.SelectedDate,
-                                                                               (IsCompletedEnum)FiltersIsCompleted.SelectedItem);
+            FilterService.IsCompleted = (IsCompletedEnum)FiltersIsCompleted.SelectedItem;
+            FilterService.FilterCollection(tasks);
+        }
+
+        private void CancelAllFiltersButton_Click(object sender, RoutedEventArgs e)
+        {
+            FiltersIsCompleted.SelectedItem = IsCompletedEnum.All;
+            FiltersShortDescription.Text = string.Empty;
+            FiltersFinishTo.SelectedDate = null;
+            FiltersCreationDate.SelectedDate = null;
+            FilterService.ClearFilters();
+            FiltersDisabled();
+        }
+
+        private void AllFiltersButton_Click(object sender, RoutedEventArgs e)
+        {
+            AllFiltersWindow allFiltersWindow = new AllFiltersWindow(Top, Left, Height, Width);
+            allFiltersWindow.ShowDialog();
+            if (allFiltersWindow.AllowFilters)
+                FilterService.FilterCollection(tasks);
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -219,6 +237,16 @@ namespace DailyNotebookApp
                 FiltersFinishTo.Visibility = Visibility.Visible;
                 FiltersCreationDate.Visibility = Visibility.Visible;
             }
+        }
+
+        private void FiltersDisabled()
+        {
+            NotebookDataGrid.ItemsSource = tasks;
+        }
+
+        private void FiltersEnabled(IEnumerable<Task> taskCollection)
+        {
+            NotebookDataGrid.ItemsSource = taskCollection;
         }
     }
 }

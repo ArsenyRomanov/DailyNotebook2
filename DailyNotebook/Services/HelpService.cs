@@ -85,35 +85,6 @@ namespace DailyNotebookApp.Services
             }
         }
 
-        public static List<Task> FilterCollection(IEnumerable<Task> collection, string shortTask, DateTime? finishTo, DateTime? creationDate, IsCompletedEnum isCompletedEnum)
-        {
-            var filteredCollection = collection;
-
-            if (!string.IsNullOrWhiteSpace(shortTask))
-                filteredCollection = filteredCollection.Where(item => item.ShortDescription.Contains(shortTask));
-            if (finishTo != null)
-                filteredCollection = filteredCollection.Where(item => item.FinishToDate == finishTo);
-            if (creationDate != null)
-                filteredCollection = filteredCollection.Where(item => DateTime.Parse(item.CreationDate.Substring(0, 10)) == creationDate);
-
-            switch (isCompletedEnum)
-            {
-                case IsCompletedEnum.All:
-                    filteredCollection = filteredCollection.Where(item => true);
-                    break;
-                case IsCompletedEnum.Completed:
-                    filteredCollection = filteredCollection.Where(item => item.IsCompleted);
-                    break;
-                case IsCompletedEnum.Uncompleted:
-                    filteredCollection = filteredCollection.Where(item => !item.IsCompleted);
-                    break;
-                default:
-                    break;
-            }
-
-            return filteredCollection.ToList();
-        }
-
         public static void ManageControlsOnDateRangeChanged(DatePicker current, DatePicker second, Grid subtasksGrid, EventHandler<SelectionChangedEventArgs> selectedDateChanged, BindingList<Subtask> subtasks, DateRange dateRange)
         {
             if (current.SelectedDate == null && subtasksGrid.RowDefinitions.Count != 0)

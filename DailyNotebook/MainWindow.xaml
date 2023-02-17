@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Daily Notebook"
         Height="665" Width="1250" MinHeight="665" MinWidth="1250"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="Manual"
         Loaded="Window_Loaded" SizeChanged="Window_SizeChanged">
     <Grid x:Name="MainGrid">
         <DataGrid x:Name="NotebookDataGrid" Margin="5,5,310,274" FontSize="16" FontWeight="Bold" AutoGenerateColumns="False" CanUserAddRows="False">
@@ -99,9 +99,12 @@
                 <TextBlock HorizontalAlignment="Left" Text="Filters:" 
                            FontSize="20" Foreground="#FF673AB7" 
                            Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                <Button x:Name="CancelAllFiltersButton" Content="Cancel filters" 
+                        HorizontalAlignment="Center" Margin="0,5,0,0"
+                        Style="{StaticResource MaterialDesignFlatButton}" Height="Auto" Click="CancelAllFiltersButton_Click"/>
                 <Button x:Name="AllFiltersButton" Content="All filters" 
                         HorizontalAlignment="Right" Margin="0,5,0,0"
-                        Style="{StaticResource MaterialDesignFlatButton}" Height="Auto"/>
+                        Style="{StaticResource MaterialDesignFlatButton}" Height="Auto" Click="AllFiltersButton_Click"/>
             </Grid>
             <Grid>
                 <TextBlock Text="IsCompleted:" FontSize="14" Width="85" Margin="0,3,0,0" HorizontalAlignment="Left"

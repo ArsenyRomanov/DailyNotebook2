@@ -7,7 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="Edit Task" Height="630" Width="588"
-        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="SingleBorderWindow"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None"
         Loaded="Window_Loaded">
     <Grid Background="#ffdadada">
         <Border Margin="15" Background="White" VerticalAlignment="Center" Padding="30" CornerRadius="20">
