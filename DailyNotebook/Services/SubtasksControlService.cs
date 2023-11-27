@@ -1,5 +1,6 @@
 ﻿using DailyNotebookApp.Models;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,7 +11,7 @@ namespace DailyNotebookApp.Services
     {
         public static void AddSubtaskControls(Grid subtasksGrid,
                                               EventHandler<SelectionChangedEventArgs> selectedDateChanged,
-                                              BindingList<Subtask> subtasks,
+                                              ObservableCollection<Subtask> subtasks,
                                               DateRange dateRange)
         {
             subtasksGrid.RowDefinitions.Add(new RowDefinition());
@@ -43,8 +44,8 @@ namespace DailyNotebookApp.Services
 
         public static void AddSubtaskControls(Grid subtasksGrid,
                                               EventHandler<SelectionChangedEventArgs> selectedDateChanged,
-                                              BindingList<Subtask> subtasks,
-                                              BindingList<Subtask> oldSubtasks,
+                                              ObservableCollection<Subtask> subtasks,
+                                              ObservableCollection<Subtask> oldSubtasks,
                                               DateRange dateRange)
         {
             for (int i = 0; i <= oldSubtasks.Count; i++)

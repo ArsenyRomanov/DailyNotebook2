@@ -1,6 +1,7 @@
 ﻿using DailyNotebookApp.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls;
@@ -45,7 +46,7 @@ namespace DailyNotebook.Services
             HasSubtasks = SubtasksFilterEnum.NoFilter;
         }
 
-        public static void FilterCollection(BindingList<Task> tasks)
+        public static void FilterCollection(ObservableCollection<Task> tasks)
         {
             IEnumerable<Task> collection = tasks;
 

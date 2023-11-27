@@ -1,10 +1,15 @@
 ﻿using DailyNotebook;
+using DailyNotebook.Properties;
 using DailyNotebook.Services;
 using DailyNotebookApp.Models;
 using DailyNotebookApp.Services;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.IO;
+using System.Linq;
+using System.Resources;
 using System.Windows;
 
 namespace DailyNotebookApp
@@ -15,7 +20,8 @@ namespace DailyNotebookApp
     public partial class MainWindow : Window
     {
         //private readonly string PATH = $"{Environment.CurrentDirectory}\\tasks.json";
-        private BindingList<Task> tasks;
+        private ObservableCollection<Task> tasks;
+        private readonly string LAST_ACTIONS_PATH = "LastActionsHistory.txt";
         //private FileIOService fileIOService;
 
         public MainWindow()
@@ -24,11 +30,6 @@ namespace DailyNotebookApp
 
             Top = SystemParameters.FullPrimaryScreenHeight - Height;
             Left = SystemParameters.FullPrimaryScreenWidth - Width;
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            //fileIOService = new FileIOService(PATH);
 
             try { tasks = DataBaseIOService.LoadData(); }
             catch (Exception exception)
@@ -37,11 +38,50 @@ namespace DailyNotebookApp
                 Close();
             }
 
+            string today = $"[{DateTime.Today.ToShortDateString()}]";
+
+            if (!File.Exists(LAST_ACTIONS_PATH))
+            {
+                File.WriteAllText(LAST_ACTIONS_PATH, today + "\r\n");
+            }
+            else
+            {
+                string lastActionsHistory;
+
+                using (var sr = new StreamReader(LAST_ACTIONS_PATH))
+                {
+                    lastActionsHistory = sr.ReadToEnd();
+                }
+
+                if (!lastActionsHistory.Contains(today))
+                {
+                    using (var sw = new StreamWriter(LAST_ACTIONS_PATH, true))
+                    {
+                        sw.Write("\n\n\n");
+                        sw.WriteLine(today);
+                    }
+                }
+                else
+                {
+                    var lastActionsArray = lastActionsHistory.Substring(lastActionsHistory.IndexOf(today)).Split("\r\n").Where(x => x.Contains('\t'));
+
+                    foreach (var action in lastActionsArray)
+                    {
+                        HelpService.InsertToListBox(LastActionsListBox, action);
+                    }
+                }
+            }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            //fileIOService = new FileIOService(PATH);
+
             NotebookDataGrid.ItemsSource = tasks;
-            tasks.ListChanged += Tasks_ListChanged;
+            tasks.CollectionChanged += Tasks_CollectionChanged;
             
             foreach (var task in tasks)
-                task.Subtasks.ListChanged += Tasks_ListChanged;
+                task.Subtasks.CollectionChanged += Tasks_CollectionChanged;
 
             FiltersIsCompleted.ItemsSource = Enum.GetValues(typeof(IsCompletedEnum));
             FiltersIsCompleted.SelectedItem = IsCompletedEnum.All;
@@ -111,13 +151,15 @@ namespace DailyNotebookApp
             }
         }
 
-        private void Tasks_ListChanged(object sender, ListChangedEventArgs e)
+        private void CheckBox_Inverted(object sender, RoutedEventArgs e)
         {
-            if (e.ListChangedType == ListChangedType.ItemChanged)
-            {
-                try { DataBaseIOService.UpdateAll(tasks); }
-                catch (Exception exception) { MessageBox.Show(exception.Message); }
-            }
+            Tasks_CollectionChanged(sender, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        private void Tasks_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            try { DataBaseIOService.UpdateAll(tasks); }
+            catch (Exception exception) { MessageBox.Show(exception.Message); }
         }
 
         private void CreateTaskButton_Click(object sender, RoutedEventArgs e)
@@ -133,7 +175,9 @@ namespace DailyNotebookApp
                 catch (Exception exception) { MessageBox.Show(exception.Message); }
 
                 foreach (var task in tasks)
-                    task.Subtasks.ListChanged += Tasks_ListChanged;
+                    task.Subtasks.CollectionChanged += Tasks_CollectionChanged;
+
+                HelpService.SaveNInsertToListBox(LastActionsListBox, LAST_ACTIONS_PATH, "TaskCreateMessage", newTask.ShortDescription);
             }
         }
 
@@ -161,6 +205,8 @@ namespace DailyNotebookApp
             NotebookDataGrid.ItemsSource = null;
             NotebookDataGrid.ItemsSource = tasks;
             NotebookDataGrid.SelectedIndex = index;
+
+            HelpService.SaveNInsertToListBox(LastActionsListBox, LAST_ACTIONS_PATH, "TaskEditMessage", taskToEdit.ShortDescription);
         }
 
         private void DeleteTaskButton_Click(object sender, RoutedEventArgs e)
@@ -174,10 +220,13 @@ namespace DailyNotebookApp
                 else
                     NotebookDataGrid.SelectedItem = NotebookDataGrid.Items[NotebookDataGrid.SelectedIndex + 1];
             }
-            tasks.Remove(taskToDelete);
 
             try { DataBaseIOService.RemoveTask(taskToDelete); }
             catch (Exception exception) { MessageBox.Show(exception.Message); }
+
+            tasks.Remove(taskToDelete);
+
+            HelpService.SaveNInsertToListBox(LastActionsListBox, LAST_ACTIONS_PATH, "TaskDeleteMessage", taskToDelete.ShortDescription);
         }
 
         private void FiltersShortDescriptionTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
@@ -219,7 +268,13 @@ namespace DailyNotebookApp
             AllFiltersWindow allFiltersWindow = new AllFiltersWindow(Top, Left, Height, Width);
             allFiltersWindow.ShowDialog();
             if (allFiltersWindow.AllowFilters)
+            {
                 FilterService.FilterCollection(tasks);
+                FiltersShortDescription.Text = FilterService.ShortDescription;
+                FiltersFinishTo.SelectedDate = FilterService.FinishToDate;
+                FiltersCreationDate.SelectedDate = FilterService.CreationDate;
+                FiltersIsCompleted.SelectedItem = FilterService.IsCompleted;
+            }
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -232,10 +287,18 @@ namespace DailyNotebookApp
                 FiltersCreationDate.Visibility = Visibility.Visible;
             else FiltersCreationDate.Visibility = Visibility.Hidden;
 
+            if (Height >= (MinHeight + FiltersFinishTo.Height + FiltersCreationDate.Height + LastActionsTextBlock.Height + 40))
+            {
+                LastActionsStackPanel.Visibility = Visibility.Visible;
+                LastActionsScrollViewer.MaxHeight = Height - 800;
+            }
+            else LastActionsStackPanel.Visibility = Visibility.Hidden;
+
             if (WindowState == WindowState.Maximized)
             {
                 FiltersFinishTo.Visibility = Visibility.Visible;
                 FiltersCreationDate.Visibility = Visibility.Visible;
+                LastActionsStackPanel.Visibility = Visibility.Visible;
             }
         }
 

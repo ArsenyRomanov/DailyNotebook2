@@ -8,11 +8,11 @@ namespace DailyNotebookApp.Services
         public DbSet<Task> Tasks { get; set; } = null!;
         public DbSet<Subtask> Subtasks { get; set; } = null!;
 
-        //public ApplicationContext()
-        //{
-        //    Database.EnsureDeleted();
-        //    Database.EnsureCreated();
-        //}
+        public ApplicationContext()
+        {
+            //Database.EnsureDeleted();
+            Database.EnsureCreated();
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

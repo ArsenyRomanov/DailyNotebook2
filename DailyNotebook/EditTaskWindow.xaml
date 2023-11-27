@@ -22,6 +22,11 @@
 
                     <TextBox x:Name="ShortDescriptionTextBox" materialDesign:HintAssist.Hint="Short description"
                              FontSize="16" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                    <Grid Margin="0,15,0,0">
+                        <TextBlock HorizontalAlignment="Left" Text="Is completed:"
+                                   Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                        <CheckBox x:Name="IsCompletedCheckBox" Margin="110,3,0,0"/>
+                    </Grid>
                     <Grid>
                         <TextBlock HorizontalAlignment="Left" Margin="0,24,0,0" Text="Finish to: "
                                    Style="{StaticResource MaterialDesignBody1TextBlock}"/>

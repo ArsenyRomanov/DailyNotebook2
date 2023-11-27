@@ -1,5 +1,6 @@
 ﻿using DailyNotebookApp.Models;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Controls;
 
@@ -38,7 +39,7 @@ namespace DailyNotebookApp.Services
             return null;
         }
 
-        public static BindingList<Subtask> CheckNAssignSubtasks(BindingList<Subtask> subtasks, DateRange dateRange)
+        public static ObservableCollection<Subtask> CheckNAssignSubtasks(ObservableCollection<Subtask> subtasks, DateRange dateRange)
         {
             var count = subtasks.Count;
             for (int i = 0; i < count; i++)

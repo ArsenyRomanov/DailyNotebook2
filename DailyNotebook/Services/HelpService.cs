@@ -1,8 +1,12 @@
-﻿using DailyNotebookApp.Models;
+﻿using DailyNotebook.Properties;
+using DailyNotebookApp.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Resources;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -11,6 +15,8 @@ namespace DailyNotebookApp.Services
 {
     public static class HelpService
     {
+        private static ResourceManager rm = new ResourceManager(typeof(Resources));
+
         public static string FormatDateTimeOutput()
         {
             return DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString();
@@ -66,7 +72,7 @@ namespace DailyNotebookApp.Services
             propertyInfo.SetValue(dateRange, prevValue);
         }
 
-        public static void UpdateProperty(BindingList<Subtask> subtasks)
+        public static void UpdateProperty(ObservableCollection<Subtask> subtasks)
         {
             foreach (var subtask in subtasks)
             {
@@ -85,7 +91,7 @@ namespace DailyNotebookApp.Services
             }
         }
 
-        public static void ManageControlsOnDateRangeChanged(DatePicker current, DatePicker second, Grid subtasksGrid, EventHandler<SelectionChangedEventArgs> selectedDateChanged, BindingList<Subtask> subtasks, DateRange dateRange)
+        public static void ManageControlsOnDateRangeChanged(DatePicker current, DatePicker second, Grid subtasksGrid, EventHandler<SelectionChangedEventArgs> selectedDateChanged, ObservableCollection<Subtask> subtasks, DateRange dateRange)
         {
             if (current.SelectedDate == null && subtasksGrid.RowDefinitions.Count != 0)
             {
@@ -139,6 +145,28 @@ namespace DailyNotebookApp.Services
                 Mode = BindingMode.TwoWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };
+        }
+
+        public static void InsertToListBox(ListBox listBox, string message)
+        {
+            listBox.Items.Add(message);
+
+            if (listBox.Items.Count > 1)
+            {
+                for (int i = listBox.Items.Count - 1; i > 0; i--)
+                {
+                    listBox.Items[i] = listBox.Items[i - 1];
+                }
+
+                listBox.Items[0] = message;
+            }
+        }
+
+        public static void SaveNInsertToListBox(ListBox listBox, string savePath, string key, string taskName)
+        {
+            string message = $"{DateTime.Now.ToShortTimeString()}\t{rm.GetString(key)} \"{taskName}\"";
+            using (var sw = new StreamWriter(savePath, true)) sw.WriteLine(message);
+            InsertToListBox(listBox, message);
         }
     }
 }

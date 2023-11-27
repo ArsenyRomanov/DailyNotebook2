@@ -11,7 +11,7 @@
         WindowStartupLocation="Manual"
         Loaded="Window_Loaded" SizeChanged="Window_SizeChanged">
     <Grid x:Name="MainGrid">
-        <DataGrid x:Name="NotebookDataGrid" Margin="5,5,310,274" FontSize="16" FontWeight="Bold" AutoGenerateColumns="False" CanUserAddRows="False">
+        <DataGrid x:Name="NotebookDataGrid" Margin="5,5,310,274" FontSize="16" FontWeight="Bold" AutoGenerateColumns="False" CanUserAddRows="False" CanUserSortColumns="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Creation date" Width="165" IsReadOnly="True" CanUserResize="False"
                                     Binding="{Binding Path=CreationDate}"/>
@@ -19,8 +19,14 @@
                                     Binding="{Binding Path=FinishTo}"/>
                 <DataGridTextColumn Header="Short description" Width="*" IsReadOnly="True" CanUserResize="False"
                                     Binding="{Binding Path=ShortDescription}"/>
-                <DataGridCheckBoxColumn Header="Completed" IsReadOnly="False" CanUserResize="False"
-                                        Binding="{Binding Path=IsCompleted, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTemplateColumn Header="Completed">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox Unchecked="CheckBox_Inverted" Checked="CheckBox_Inverted" 
+                                      IsChecked="{Binding Path=IsCompleted, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
 
@@ -82,7 +88,14 @@
                           CanUserAddRows="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn IsReadOnly="True" Binding="{Binding Path=OrdinalNumber}"/>
-                        <DataGridCheckBoxColumn IsReadOnly="False" Binding="{Binding Path=IsCompleted, UpdateSourceTrigger=PropertyChanged}"/>
+                        <DataGridTemplateColumn IsReadOnly="False">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox Unchecked="CheckBox_Inverted" Checked="CheckBox_Inverted"
+                                              IsChecked="{Binding Path=IsCompleted, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                         <DataGridTextColumn IsReadOnly="True" Binding="{Binding Path=DateString}"/>
                         <DataGridTextColumn IsReadOnly="True" Binding="{Binding Path=Description}"/>
                     </DataGrid.Columns>
@@ -126,17 +139,13 @@
         </StackPanel>
 
         <StackPanel x:Name="LastActionsStackPanel" HorizontalAlignment="Right" 
-                    Width="300" Margin="5,319,5,371" Visibility="Hidden">
-            <TextBlock x:Name="LastActionsTextBlock" HorizontalAlignment="Left" 
-                       Text="Last actions:" Visibility="Hidden" 
-                       FontSize="20" Foreground="#FF673AB7" 
+                    Width="300" Margin="5,350,5,371">
+            <TextBlock x:Name="LastActionsTextBlock" HorizontalAlignment="Left" Height="35"
+                       Text="Last actions:" FontSize="20" Foreground="#FF673AB7" 
                        Style="{StaticResource MaterialDesignBody1TextBlock}"/>
-            <Grid x:Name="LastActionsGrid" Visibility="Hidden">
-                <DataGrid x:Name="dgLastActions" Visibility="Hidden">
-                    <DataGridTextColumn/>
-                    <DataGridTextColumn/>
-                </DataGrid>
-            </Grid>
+            <ScrollViewer x:Name="LastActionsScrollViewer">
+                <ListBox x:Name="LastActionsListBox"/>
+            </ScrollViewer>
         </StackPanel>
     </Grid>
 </Window>

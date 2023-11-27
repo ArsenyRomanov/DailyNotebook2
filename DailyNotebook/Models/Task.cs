@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 
@@ -19,7 +20,7 @@ namespace DailyNotebookApp.Models
         private TypeOfTaskEnum typeOfTask;
         private string? detailedDescription;
         private DateRange? dateRange;
-        private BindingList<Subtask>? subtasks;
+        private ObservableCollection<Subtask>? subtasks;
 
         private readonly Dictionary<string, List<string>> propertyErrors = new Dictionary<string, List<string>>();
 
@@ -179,7 +180,7 @@ namespace DailyNotebookApp.Models
             }
         }
 
-        public BindingList<Subtask>? Subtasks
+        public ObservableCollection<Subtask>? Subtasks
         {
             get { return subtasks; }
             set
@@ -193,7 +194,7 @@ namespace DailyNotebookApp.Models
         {
             CreationDate = HelpService.FormatDateTimeOutput();
             DateRange = new DateRange(CreationDate, null, null);
-            Subtasks = new BindingList<Subtask>();
+            Subtasks = new ObservableCollection<Subtask>();
         }
 
         public void Assign(Task task)

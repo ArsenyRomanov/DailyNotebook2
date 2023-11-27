@@ -1,6 +1,7 @@
 ﻿using DailyNotebookApp.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -20,12 +21,12 @@ namespace DailyNotebookApp.Services
             }
         }
 
-        public static BindingList<Task> LoadData()
+        public static ObservableCollection<Task> LoadData()
         {
             using(ApplicationContext db = new ApplicationContext())
             {
                 var tasksList = db.Tasks.Include(x => x.Subtasks).ToList();
-                BindingList<Task> tasks = new BindingList<Task>();
+                ObservableCollection<Task> tasks = new ObservableCollection<Task>();
                 foreach (var task in tasksList)
                 {
                     if (task.DateRangeString != null)
@@ -74,7 +75,7 @@ namespace DailyNotebookApp.Services
             }
         }
 
-        public static void UpdateAll(BindingList<Task> tasks)
+        public static void UpdateAll(ObservableCollection<Task> tasks)
         {
             using (ApplicationContext db = new ApplicationContext())
             {

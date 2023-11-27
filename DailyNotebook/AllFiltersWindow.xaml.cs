@@ -36,8 +36,7 @@ namespace DailyNotebook
 
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
-            FilterService.ClearFilters();
-            AssignElements();
+            ClearElements();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -110,6 +109,22 @@ namespace DailyNotebook
             if (FilterService.HasSubtasks is not null)
                 HasSubtasksComboBox.SelectedItem = FilterService.HasSubtasks;
             else HasSubtasksComboBox.SelectedItem = SubtasksFilterEnum.NoFilter;
+        }
+
+        private void ClearElements()
+        {
+            ShortDescriptionTextBox.Text = string.Empty;
+            IsCompletedComboBox.SelectedItem = IsCompletedEnum.All;
+            CreationDatePicker.SelectedDate = null;
+            FinishToDatePicker.SelectedDate = null;
+            FinishToHourTextBox.Text = string.Empty;
+            FinishToMinutesTextBox.Text = string.Empty;
+            PriorityComboBox.SelectedItem = PriorityEnum.None;
+            TypeOfTaskComboBox.SelectedItem = TypeOfTaskEnum.None;
+            DetailedDescriptionTextBox.Text = string.Empty;
+            DateRangeStartDatePicker.SelectedDate = null;
+            DateRangeEndDatePicker.SelectedDate = null;
+            HasSubtasksComboBox.SelectedItem = SubtasksFilterEnum.NoFilter;
         }
     }
 }

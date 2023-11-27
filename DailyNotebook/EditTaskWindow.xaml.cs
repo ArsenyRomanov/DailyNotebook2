@@ -1,6 +1,7 @@
 ﻿using DailyNotebookApp.Models;
 using DailyNotebookApp.Services;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -15,17 +16,18 @@ namespace DailyNotebookApp
     public partial class EditTaskWindow : Window
     {
         public Task EditedTask { get; set; } = new Task();
-        BindingList<Subtask> Subtasks { get; set; } = new BindingList<Subtask>();
+        ObservableCollection<Subtask> Subtasks { get; set; } = new ObservableCollection<Subtask>();
         DateRange DateRange { get; set; }
 
         public EditTaskWindow(Task taskToEdit)
         {
-            InitializeComponent();
+            InitializeComponent(); 
 
             PriorityComboBox.ItemsSource = Enum.GetValues(typeof(PriorityEnum));
             TypeOfTaskComboBox.ItemsSource = Enum.GetValues(typeof(TypeOfTaskEnum));
 
             ShortDescriptionTextBox.SetBinding(TextBox.TextProperty, HelpService.AddBinding(EditedTask, "ShortDescription"));
+            IsCompletedCheckBox.SetBinding(CheckBox.IsCheckedProperty, HelpService.AddBinding(EditedTask, "IsCompleted"));
             FinishToDatePicker.SetBinding(DatePicker.SelectedDateProperty, HelpService.AddBinding(EditedTask, "FinishToDate"));
             FinishToHoursTextBox.SetBinding(TextBox.TextProperty, HelpService.AddBinding(EditedTask, "FinishToHour"));
             FinishToMinutesTextBox.SetBinding(TextBox.TextProperty, HelpService.AddBinding(EditedTask, "FinishToMinutes"));
@@ -35,6 +37,7 @@ namespace DailyNotebookApp
 
             CreationDateTextBlock.Text = taskToEdit.CreationDate;
             ShortDescriptionTextBox.Text = taskToEdit.ShortDescription;
+            IsCompletedCheckBox.IsChecked = taskToEdit.IsCompleted;
 
             if (taskToEdit.DateRange != null )
             {
