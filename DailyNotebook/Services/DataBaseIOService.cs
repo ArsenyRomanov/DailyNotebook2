@@ -1,19 +1,21 @@
-﻿using DailyNotebookApp.Models;
+﻿using DailyNotebook.Models;
+using DailyNotebookApp.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Windows;
+using System.Windows.Markup;
 
 namespace DailyNotebookApp.Services
 {
     public class DataBaseIOService
     {
-        public static void AddTask(Task task)
+        public static void AddTask(Task task, Worksheet worksheet)
         {
             using (ApplicationContext db = new ApplicationContext())
             {
+                db.Worksheets.Update(worksheet);
                 db.Tasks.Add(task);
                 if (task.Subtasks.Any())
                     db.Subtasks.AddRange(task.Subtasks);
@@ -21,11 +23,28 @@ namespace DailyNotebookApp.Services
             }
         }
 
-        public static ObservableCollection<Task> LoadData()
+        public static void AddWorksheet(Worksheet worksheet)
+        {
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                db.Worksheets.Add(worksheet);
+                db.SaveChanges();
+            }
+        }
+
+        public static List<Worksheet> LoadWorksheets()
+        {
+            var worksheets = new List<Worksheet>();
+            using (ApplicationContext db = new ApplicationContext())
+                worksheets = db.Worksheets.Include(x => x.Tasks).ToList();
+            return worksheets;
+        }
+
+        public static ObservableCollection<Task> LoadData(Worksheet worksheet)
         {
             using(ApplicationContext db = new ApplicationContext())
             {
-                var tasksList = db.Tasks.Include(x => x.Subtasks).ToList();
+                var tasksList = db.Tasks.Include(x => x.Subtasks).Where(x => x.WorksheetId == worksheet.Id).ToList();
                 ObservableCollection<Task> tasks = new ObservableCollection<Task>();
                 foreach (var task in tasksList)
                 {
@@ -65,6 +84,15 @@ namespace DailyNotebookApp.Services
             }
         }
 
+        public static void DeleteWorksheet(Worksheet worksheet)
+        {
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                db.Worksheets.Remove(worksheet);
+                db.SaveChanges();
+            }
+        }
+
         public static void UpdateTask(Task updatedTask)
         {
             using (ApplicationContext db = new ApplicationContext())
@@ -75,11 +103,20 @@ namespace DailyNotebookApp.Services
             }
         }
 
-        public static void UpdateAll(ObservableCollection<Task> tasks)
+        public static void UpdateWorksheet(Worksheet worksheet)
         {
             using (ApplicationContext db = new ApplicationContext())
             {
-                var oldTasks = db.Tasks.Include(x => x.Subtasks).ToList();
+                db.Worksheets.First(x => x.Id == worksheet.Id).LastOpenedDate = worksheet.LastOpenedDate;
+                db.SaveChanges();
+            }
+        }
+
+        public static void UpdateAll(ObservableCollection<Task> tasks, Worksheet worksheet)
+        {
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                var oldTasks = db.Tasks.Include(x => x.Subtasks).Where(x => x.WorksheetId == worksheet.Id).ToList();
 
                 for (var i = 0; i < oldTasks.Count; i++)
                 {

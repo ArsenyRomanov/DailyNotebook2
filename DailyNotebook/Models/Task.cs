@@ -1,4 +1,5 @@
-﻿using DailyNotebookApp.Services;
+﻿using DailyNotebook.Models;
+using DailyNotebookApp.Services;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,6 +26,8 @@ namespace DailyNotebookApp.Models
         private readonly Dictionary<string, List<string>> propertyErrors = new Dictionary<string, List<string>>();
 
         public int Id { get; set; }
+        public int WorksheetId { get; set; }
+        public Worksheet Worksheet { get; set; }
 
         public bool CanCreate { get; set; } = false;
 

@@ -1,9 +1,9 @@
-﻿using DailyNotebook.Properties;
+﻿using DailyNotebook.Models;
+using DailyNotebook.Properties;
 using DailyNotebookApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Resources;
@@ -162,11 +162,23 @@ namespace DailyNotebookApp.Services
             }
         }
 
-        public static void SaveNInsertToListBox(ListBox listBox, string savePath, string key, string taskName)
+        public static void SaveNInsertToListBox(ListBox listBox, string savePath, string key, string taskName, string worksheetName)
         {
-            string message = $"{DateTime.Now.ToShortTimeString()}\t{rm.GetString(key)} \"{taskName}\"";
+            string message = $"{DateTime.Now.ToShortTimeString()}\t{rm.GetString(key)} \"{taskName}\" in worksheet {worksheetName}";
             using (var sw = new StreamWriter(savePath, true)) sw.WriteLine(message);
             InsertToListBox(listBox, message);
+        }
+
+        public static void RefreshWorksheetControls(ListBox listBox, TextBlock textBlock, List<Worksheet> worksheets)
+        {
+            listBox.Items.Clear();
+
+            foreach (var worksheet in worksheets.OrderBy(x => x.LastOpenedDate))
+                InsertToListBox(listBox, $"{worksheet.Name}\t\t" +
+                    $"Tasks: {(worksheet.Tasks == null ? 0 : worksheet.Tasks.Count)}\t\t" +
+                    $"{(worksheet.LastOpenedDate == DateTime.Today ? 0 : (DateTime.Today - worksheet.LastOpenedDate).Days)} days ago");
+
+            textBlock.Text = $"Worksheets: {worksheets.Count.ToString()}";
         }
     }
 }

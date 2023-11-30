@@ -1,4 +1,5 @@
-﻿using DailyNotebookApp.Models;
+﻿using DailyNotebook.Models;
+using DailyNotebookApp.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DailyNotebookApp.Services
@@ -7,6 +8,7 @@ namespace DailyNotebookApp.Services
     {
         public DbSet<Task> Tasks { get; set; } = null!;
         public DbSet<Subtask> Subtasks { get; set; } = null!;
+        public DbSet<Worksheet> Worksheets { get; set; } = null!;
 
         public ApplicationContext()
         {

@@ -6,7 +6,6 @@
         xmlns:local="clr-namespace:DailyNotebookApp"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Daily Notebook"
         Height="665" Width="1250" MinHeight="665" MinWidth="1250"
         WindowStartupLocation="Manual"
         Loaded="Window_Loaded" SizeChanged="Window_SizeChanged">
@@ -31,7 +30,7 @@
         </DataGrid>
 
         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5">
-            <Button x:Name="ReturnToMenuButton" Content="Return to menu" FontSize="16" Margin="0,0,0,5" Width="300" Height="Auto"/>
+            <Button x:Name="ReturnToMenuButton" Content="Return to menu" FontSize="16" Margin="0,0,0,5" Width="300" Height="Auto" Click="ReturnToMenuButton_Click"/>
             <Button x:Name="CreateTaskButton" Content="Create task" FontSize="16" Margin="0,0,0,5" Width="Auto" Height="Auto" Click="CreateTaskButton_Click"/>
             <Button x:Name="DeleteTaskButton" Content="Delete task" FontSize="16" Margin="0,0,0,5" Width="Auto" Height="Auto" Click="DeleteTaskButton_Click"/>
             <Button x:Name="EditTaskButton" Content="Edit task" FontSize="16" Width="Auto" Height="Auto" Click="EditTaskButton_Click"/>

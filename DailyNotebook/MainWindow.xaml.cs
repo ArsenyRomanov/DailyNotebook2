@@ -1,5 +1,5 @@
 ﻿using DailyNotebook;
-using DailyNotebook.Properties;
+using DailyNotebook.Models;
 using DailyNotebook.Services;
 using DailyNotebookApp.Models;
 using DailyNotebookApp.Services;
@@ -9,7 +9,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using System.Resources;
 using System.Windows;
 
 namespace DailyNotebookApp
@@ -20,38 +19,39 @@ namespace DailyNotebookApp
     public partial class MainWindow : Window
     {
         //private readonly string PATH = $"{Environment.CurrentDirectory}\\tasks.json";
+        private Worksheet worksheet { get; set; }
         private ObservableCollection<Task> tasks;
         private readonly string LAST_ACTIONS_PATH = "LastActionsHistory.txt";
         //private FileIOService fileIOService;
 
-        public MainWindow()
+        public MainWindow(Worksheet worksheet)
         {
             InitializeComponent();
 
             Top = SystemParameters.FullPrimaryScreenHeight - Height;
             Left = SystemParameters.FullPrimaryScreenWidth - Width;
 
-            try { tasks = DataBaseIOService.LoadData(); }
+            this.worksheet = worksheet;
+
+            Title = worksheet.Name;
+
+            try { tasks = DataBaseIOService.LoadData(worksheet); }
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message);
                 Close();
             }
 
+            this.worksheet.Tasks = tasks;
+
             string today = $"[{DateTime.Today.ToShortDateString()}]";
 
-            if (!File.Exists(LAST_ACTIONS_PATH))
-            {
-                File.WriteAllText(LAST_ACTIONS_PATH, today + "\r\n");
-            }
+            if (!File.Exists(LAST_ACTIONS_PATH)) File.WriteAllText(LAST_ACTIONS_PATH, today + "\r\n");
             else
             {
                 string lastActionsHistory;
 
-                using (var sr = new StreamReader(LAST_ACTIONS_PATH))
-                {
-                    lastActionsHistory = sr.ReadToEnd();
-                }
+                using (var sr = new StreamReader(LAST_ACTIONS_PATH)) lastActionsHistory = sr.ReadToEnd();
 
                 if (!lastActionsHistory.Contains(today))
                 {
@@ -65,10 +65,7 @@ namespace DailyNotebookApp
                 {
                     var lastActionsArray = lastActionsHistory.Substring(lastActionsHistory.IndexOf(today)).Split("\r\n").Where(x => x.Contains('\t'));
 
-                    foreach (var action in lastActionsArray)
-                    {
-                        HelpService.InsertToListBox(LastActionsListBox, action);
-                    }
+                    foreach (var action in lastActionsArray)  HelpService.InsertToListBox(LastActionsListBox, action);
                 }
             }
         }
@@ -158,8 +155,13 @@ namespace DailyNotebookApp
 
         private void Tasks_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            try { DataBaseIOService.UpdateAll(tasks); }
+            try { DataBaseIOService.UpdateAll(tasks, worksheet); }
             catch (Exception exception) { MessageBox.Show(exception.Message); }
+        }
+
+        private void ReturnToMenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
 
         private void CreateTaskButton_Click(object sender, RoutedEventArgs e)
@@ -171,13 +173,13 @@ namespace DailyNotebookApp
             {
                 tasks.Add(newTask);
 
-                try { DataBaseIOService.AddTask(newTask); }
+                try { DataBaseIOService.AddTask(newTask, worksheet); }
                 catch (Exception exception) { MessageBox.Show(exception.Message); }
 
                 foreach (var task in tasks)
                     task.Subtasks.CollectionChanged += Tasks_CollectionChanged;
 
-                HelpService.SaveNInsertToListBox(LastActionsListBox, LAST_ACTIONS_PATH, "TaskCreateMessage", newTask.ShortDescription);
+                HelpService.SaveNInsertToListBox(LastActionsListBox, LAST_ACTIONS_PATH, "TaskCreateMessage", newTask.ShortDescription, worksheet.Name);
             }
         }
 
@@ -206,7 +208,7 @@ namespace DailyNotebookApp
             NotebookDataGrid.ItemsSource = tasks;
             NotebookDataGrid.SelectedIndex = index;
 
-            HelpService.SaveNInsertToListBox(LastActionsListBox, LAST_ACTIONS_PATH, "TaskEditMessage", taskToEdit.ShortDescription);
+            HelpService.SaveNInsertToListBox(LastActionsListBox, LAST_ACTIONS_PATH, "TaskEditMessage", taskToEdit.ShortDescription, worksheet.Name);
         }
 
         private void DeleteTaskButton_Click(object sender, RoutedEventArgs e)
@@ -226,7 +228,7 @@ namespace DailyNotebookApp
 
             tasks.Remove(taskToDelete);
 
-            HelpService.SaveNInsertToListBox(LastActionsListBox, LAST_ACTIONS_PATH, "TaskDeleteMessage", taskToDelete.ShortDescription);
+            HelpService.SaveNInsertToListBox(LastActionsListBox, LAST_ACTIONS_PATH, "TaskDeleteMessage", taskToDelete.ShortDescription, worksheet.Name);
         }
 
         private void FiltersShortDescriptionTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
