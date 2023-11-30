@@ -1,11 +1,10 @@
-﻿using DailyNotebookApp.Models;
+﻿using DailyNotebook.Models;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace DailyNotebookApp.Services
+namespace DailyNotebook.Services
 {
     public class SubtasksControlService
     {

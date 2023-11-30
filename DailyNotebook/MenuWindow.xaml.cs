@@ -1,6 +1,5 @@
 ﻿using DailyNotebook.Models;
-using DailyNotebookApp;
-using DailyNotebookApp.Services;
+using DailyNotebook.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;

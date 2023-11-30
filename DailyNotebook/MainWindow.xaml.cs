@@ -1,8 +1,5 @@
-﻿using DailyNotebook;
-using DailyNotebook.Models;
+﻿using DailyNotebook.Models;
 using DailyNotebook.Services;
-using DailyNotebookApp.Models;
-using DailyNotebookApp.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 
-namespace DailyNotebookApp
+namespace DailyNotebook
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml

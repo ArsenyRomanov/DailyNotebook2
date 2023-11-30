@@ -1,5 +1,5 @@
-﻿using DailyNotebook.Services;
-using DailyNotebookApp.Models;
+﻿using DailyNotebook.Models;
+using DailyNotebook.Services;
 using System;
 using System.Windows;
 

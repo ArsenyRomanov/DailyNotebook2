@@ -1,8 +1,7 @@
 ﻿using DailyNotebook.Models;
-using DailyNotebookApp.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DailyNotebookApp.Services
+namespace DailyNotebook.Services
 {
     internal class ApplicationContext : DbContext
     {

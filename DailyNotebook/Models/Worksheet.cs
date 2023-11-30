@@ -1,5 +1,4 @@
-﻿using DailyNotebookApp.Models;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 
 namespace DailyNotebook.Models

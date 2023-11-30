@@ -1,14 +1,13 @@
-﻿using DailyNotebookApp.Models;
-using DailyNotebookApp.Services;
+﻿using DailyNotebook.Models;
+using DailyNotebook.Services;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace DailyNotebookApp
+namespace DailyNotebook
 {
     /// <summary>
     /// Логика взаимодействия для EditTaskWindow.xaml

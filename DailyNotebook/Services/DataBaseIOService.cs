@@ -1,13 +1,11 @@
 ﻿using DailyNotebook.Models;
-using DailyNotebookApp.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Markup;
 
-namespace DailyNotebookApp.Services
+namespace DailyNotebook.Services
 {
     public class DataBaseIOService
     {

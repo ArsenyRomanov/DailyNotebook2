@@ -1,5 +1,4 @@
-﻿using DailyNotebook.Models;
-using DailyNotebookApp.Services;
+﻿using DailyNotebook.Services;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 
-namespace DailyNotebookApp.Models
+namespace DailyNotebook.Models
 {
     public class Task : INotifyPropertyChanged, INotifyDataErrorInfo
     {

@@ -1,6 +1,5 @@
 ﻿using DailyNotebook.Models;
 using DailyNotebook.Properties;
-using DailyNotebookApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,7 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace DailyNotebookApp.Services
+namespace DailyNotebook.Services
 {
     public static class HelpService
     {
