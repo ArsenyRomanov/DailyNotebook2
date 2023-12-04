@@ -60,9 +60,12 @@ namespace DailyNotebook
                 }
                 else
                 {
-                    var lastActionsArray = lastActionsHistory.Substring(lastActionsHistory.IndexOf(today)).Split("\r\n").Where(x => x.Contains('\t'));
+                    var lastActionsArray = lastActionsHistory[lastActionsHistory.IndexOf(today)..]
+                        .Split("\r\n")
+                        .Where(x => x.Contains('\t'))
+                        .Where(x => x.Substring(x.IndexOf('-') + 2) == worksheet.Name);
 
-                    foreach (var action in lastActionsArray)  HelpService.InsertToListBox(LastActionsListBox, action);
+                    foreach (var action in lastActionsArray) HelpService.InsertToListBox(LastActionsListBox, action.Split('#')[0]);
                 }
             }
         }

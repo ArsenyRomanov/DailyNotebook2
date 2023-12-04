@@ -163,9 +163,9 @@ namespace DailyNotebook.Services
 
         public static void SaveNInsertToListBox(ListBox listBox, string savePath, string key, string taskName, string worksheetName)
         {
-            string message = $"{DateTime.Now.ToShortTimeString()}\t{rm.GetString(key)} \"{taskName}\" in worksheet {worksheetName}";
+            string message = $"{DateTime.Now.ToShortTimeString()}\t{rm.GetString(key)} \"{taskName}\"# worksheet- {worksheetName}";
             using (var sw = new StreamWriter(savePath, true)) sw.WriteLine(message);
-            InsertToListBox(listBox, message);
+            InsertToListBox(listBox, message.Split('#')[0]);
         }
 
         public static void RefreshWorksheetControls(ListBox listBox, TextBlock textBlock, List<Worksheet> worksheets)
