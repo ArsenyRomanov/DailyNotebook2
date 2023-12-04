@@ -18,9 +18,12 @@ namespace DailyNotebook
         ObservableCollection<Subtask> Subtasks { get; set; } = new ObservableCollection<Subtask>();
         DateRange DateRange { get; set; }
 
-        public EditTaskWindow(Task taskToEdit)
+        public EditTaskWindow(Task taskToEdit, double mainTop, double mainLeft, double mainHeight, double mainWidth)
         {
-            InitializeComponent(); 
+            InitializeComponent();
+
+            Top = mainTop + mainHeight / 2 - Height / 2;
+            Left = mainLeft + mainWidth / 2 - Width / 2;
 
             PriorityComboBox.ItemsSource = Enum.GetValues(typeof(PriorityEnum));
             TypeOfTaskComboBox.ItemsSource = Enum.GetValues(typeof(TypeOfTaskEnum));
@@ -165,11 +168,13 @@ namespace DailyNotebook
         private void AdditionalInfoExpander_Expanded(object sender, RoutedEventArgs e)
         {
             Width += 422;
+            Left -= 211;
         }
 
         private void AdditionalInfoExpander_Collapsed(object sender, RoutedEventArgs e)
         {
             Width -= 422;
+            Left += 211;
         }
 
         private void FinishToHoursTextBox_TextChanged(object sender, TextChangedEventArgs e)

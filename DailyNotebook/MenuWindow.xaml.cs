@@ -53,9 +53,11 @@ namespace DailyNotebook
 
         private void CreateButton_Click(object sender, RoutedEventArgs e)
         {
+            MenuGrid.Opacity = 0.5;
             Worksheet newWorksheet = new Worksheet();
             CreateWorksheetWindow createWorksheetWindow = new CreateWorksheetWindow(newWorksheet, Top, Left, Height, Width);
             createWorksheetWindow.ShowDialog();
+            MenuGrid.Opacity = 1;
 
             if (!string.IsNullOrWhiteSpace(newWorksheet.Name))
             {

@@ -166,9 +166,11 @@ namespace DailyNotebook
 
         private void CreateTaskButton_Click(object sender, RoutedEventArgs e)
         {
+            MainGrid.Opacity = 0.5;
             var newTask = new Task();
-            var createTaskWindow = new CreateTaskWindow(newTask);
+            var createTaskWindow = new CreateTaskWindow(newTask, Top, Left, Height, Width);
             createTaskWindow.ShowDialog();
+            MainGrid.Opacity = 1;
             if (newTask.CanCreate)
             {
                 tasks.Add(newTask);
@@ -188,8 +190,10 @@ namespace DailyNotebook
             if (NotebookDataGrid.SelectedItem is not Task taskToEdit)
                 return;
 
-            var editTaskWindow = new EditTaskWindow(taskToEdit);
+            MainGrid.Opacity = 0.5;
+            var editTaskWindow = new EditTaskWindow(taskToEdit, Top, Left, Height, Width);
             editTaskWindow.ShowDialog();
+            MainGrid.Opacity = 1;
 
             if (!editTaskWindow.EditedTask.CanCreate)
                 return;

@@ -14,9 +14,13 @@ namespace DailyNotebook
     {
         private Task NewTask { get; set; }
 
-        public CreateTaskWindow(Task newTask)
+        public CreateTaskWindow(Task newTask, double mainTop, double mainLeft, double mainHeight, double mainWidth)
         {
             InitializeComponent();
+
+            Top = mainTop + mainHeight / 2 - Height / 2;
+            Left = mainLeft + mainWidth / 2 - Width / 2;
+
             NewTask = newTask;
             DataContext = NewTask;
             DateRangeGrid.DataContext = NewTask.DateRange;
@@ -99,11 +103,13 @@ namespace DailyNotebook
         private void AdditionalInfoExpander_Expanded(object sender, RoutedEventArgs e)
         {
             Width += 422;
+            Left -= 211;
         }
 
         private void AdditionalInfoExpander_Collapsed(object sender, RoutedEventArgs e)
         {
             Width -= 422;
+            Left += 211;
         }
 
         private void FinishToHoursTextBox_TextChanged(object sender, TextChangedEventArgs e)

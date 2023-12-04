@@ -10,7 +10,7 @@
         Height="565" Width="550" MinHeight="565" MinWidth="550"
         ResizeMode="NoResize"
         WindowStartupLocation="Manual">
-    <Grid>
+    <Grid x:Name="MenuGrid">
         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,5,0,0">
             <TextBlock Text="Daily Notebook" FontSize="40" FontWeight="Bold"
                        Style="{StaticResource MaterialDesignBody1TextBlock}" Foreground="#FF673AB7"/>
@@ -30,6 +30,7 @@
             <Button x:Name="SettingsButton" Width="150" Content="Settings" FontSize="16" Margin="0,0,0,10"/>
             <Button x:Name="ExitButton" Width="150" Content="Exit" FontSize="16" Click="ExitButton_Click"/>
         </StackPanel>
-        <ListBox x:Name="WorksheetsListBox" Margin="20,150,172,10" SelectionChanged="WorksheetsListBox_SelectionChanged"/>
+        <ListBox x:Name="WorksheetsListBox" Margin="20,150,172,10"
+                 SelectionChanged="WorksheetsListBox_SelectionChanged"/>
     </Grid>
 </Window>
