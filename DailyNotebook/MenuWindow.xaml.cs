@@ -1,8 +1,7 @@
 ﻿using DailyNotebook.Models;
 using DailyNotebook.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -13,7 +12,7 @@ namespace DailyNotebook
     /// </summary>
     public partial class MenuWindow : Window
     {
-        private List<Worksheet> worksheets = new List<Worksheet>();
+        private BindingList<Worksheet> worksheets = new BindingList<Worksheet>();
         private Worksheet? worksheet { get; set; }
 
         public MenuWindow()
@@ -30,7 +29,19 @@ namespace DailyNotebook
                 Close();
             }
 
-            HelpService.RefreshWorksheetControls(WorksheetsListBox, NumberOfWorksheetsTextBlock, worksheets);
+            if (worksheets.Count > 0)
+            {
+                foreach (var worksheet in worksheets)
+                {
+                    worksheet.LastOpenedString = $"{(DateTime.Now - worksheet.LastOpenedDate).Days} days ago";
+                    worksheet.TasksCount = $"Tasks: {worksheet.Tasks.Count}";
+                }
+
+                worksheets = HelpService.TreeSort(worksheets);
+            }
+
+            WorksheetsDG.ItemsSource = worksheets;
+            NumberOfWorksheetsTextBlock.Text = $"Worksheets: {worksheets.Count}";
         }
 
         private void AccessButton_Click(object sender, RoutedEventArgs e)
@@ -42,11 +53,15 @@ namespace DailyNotebook
                 mainWindow.ShowDialog();
 
                 worksheet.LastOpenedDate = DateTime.Now;
+                worksheet.LastOpenedString = $"{(DateTime.Now - worksheet.LastOpenedDate).Days} days ago";
+                worksheet.TasksCount = $"Tasks: {worksheet.Tasks.Count}";
 
                 try { DataBaseIOService.UpdateWorksheet(worksheet); }
                 catch (Exception exception) { MessageBox.Show(exception.Message); }
 
-                HelpService.RefreshWorksheetControls(WorksheetsListBox, NumberOfWorksheetsTextBlock, worksheets);
+                worksheets = HelpService.TreeSort(worksheets);
+                WorksheetsDG.ItemsSource = worksheets;
+                WorksheetsDG.SelectedIndex = 0;
                 Show();
             }
         }
@@ -61,35 +76,37 @@ namespace DailyNotebook
 
             if (!string.IsNullOrWhiteSpace(newWorksheet.Name))
             {
-                worksheets.Add(newWorksheet);
+                newWorksheet.LastOpenedString = "0 days ago";
+                newWorksheet.TasksCount = "Tasks: 0";
+                worksheets.Insert(0, newWorksheet);
 
                 try { DataBaseIOService.AddWorksheet(newWorksheet); }
                 catch (Exception exception) { MessageBox.Show(exception.Message); }
 
-                HelpService.RefreshWorksheetControls(WorksheetsListBox, NumberOfWorksheetsTextBlock, worksheets);
+                NumberOfWorksheetsTextBlock.Text = $"Worksheets: {worksheets.Count}";
             }
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            if (worksheet != null)
+            if (WorksheetsDG.SelectedItem is not Worksheet worksheetToDelit)
+                return;
+
+            var currentIndex = WorksheetsDG.SelectedIndex;
+
+            worksheets.Remove(worksheetToDelit);
+
+            try { DataBaseIOService.DeleteWorksheet(worksheetToDelit); }
+            catch (Exception exception) { MessageBox.Show(exception.Message); }
+
+            NumberOfWorksheetsTextBlock.Text = $"Worksheets: {worksheets.Count}";
+
+            if (worksheets.Count > 0)
             {
-                var currentIndex = WorksheetsListBox.SelectedIndex;
-
-                worksheets.Remove(worksheet);
-
-                try { DataBaseIOService.DeleteWorksheet(worksheet); }
-                catch (Exception exception) { MessageBox.Show(exception.Message); }
-
-                HelpService.RefreshWorksheetControls(WorksheetsListBox, NumberOfWorksheetsTextBlock, worksheets);
-
-                if (worksheets.Count > 0)
-                {
-                    if (currentIndex != 0)
-                        WorksheetsListBox.SelectedItem = WorksheetsListBox.Items[currentIndex - 1];
-                    else
-                        WorksheetsListBox.SelectedItem = WorksheetsListBox.Items[currentIndex];
-                }
+                if (currentIndex != 0)
+                    WorksheetsDG.SelectedItem = WorksheetsDG.Items[currentIndex - 1];
+                else
+                    WorksheetsDG.SelectedItem = WorksheetsDG.Items[currentIndex];
             }
         }
 
@@ -98,11 +115,9 @@ namespace DailyNotebook
             Application.Current.Shutdown();
         }
 
-        private void WorksheetsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void WorksheetsDG_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if ((sender as ListBox).SelectedItem is string worksheetString)
-                worksheet = worksheets.First(x => x.Name == worksheetString.Split('\t')[0]);
-            else worksheet = null;
+            worksheet = WorksheetsDG.SelectedItem as Worksheet;
         }
     }
 }

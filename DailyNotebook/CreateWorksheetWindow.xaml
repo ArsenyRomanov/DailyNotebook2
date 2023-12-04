@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DailyNotebook"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:models="clr-namespace:DailyNotebook.Models"
+        d:DataContext="{d:DesignInstance Type=models:Worksheet}"
         mc:Ignorable="d"
         Title="CreateWorksheetWindow"
         Height="210" Width="450" ResizeMode="NoResize" WindowStyle="None"
@@ -23,6 +25,7 @@
             <StackPanel VerticalAlignment="Top">
                 <TextBox x:Name="WorksheetNameTextBox" FontSize="14"
                          materialDesign:HintAssist.Hint="Worksheet name"
+                         Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
             </StackPanel>
 

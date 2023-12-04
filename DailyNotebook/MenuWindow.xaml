@@ -30,7 +30,20 @@
             <Button x:Name="SettingsButton" Width="150" Content="Settings" FontSize="16" Margin="0,0,0,10"/>
             <Button x:Name="ExitButton" Width="150" Content="Exit" FontSize="16" Click="ExitButton_Click"/>
         </StackPanel>
-        <ListBox x:Name="WorksheetsListBox" Margin="20,150,172,10"
+        <!--<ListBox x:Name="WorksheetsListBox" Margin="20,150,172,10"
                  SelectionChanged="WorksheetsListBox_SelectionChanged"/>
+        -->
+        <DataGrid x:Name="WorksheetsDG" Margin="20,150,172,10"
+                  AutoGenerateColumns="False" CanUserAddRows="False" HeadersVisibility="None"
+                  SelectionChanged="WorksheetsDG_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="*" Binding="{Binding Path=Name}"
+                                    IsReadOnly="True" CanUserResize="False"/>
+                <DataGridTextColumn Width="75" Binding="{Binding Path=TasksCount}"
+                                    IsReadOnly="True" CanUserResize="False"/>
+                <DataGridTextColumn Width="100" Binding="{Binding Path=LastOpenedString}"
+                                    IsReadOnly="True" CanUserResize="False"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>

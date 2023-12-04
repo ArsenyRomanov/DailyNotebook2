@@ -1,10 +1,9 @@
 ﻿using DailyNotebook.Models;
 using DailyNotebook.Properties;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Resources;
 using System.Windows;
 using System.Windows.Controls;
@@ -168,16 +167,13 @@ namespace DailyNotebook.Services
             InsertToListBox(listBox, message.Split('#')[0]);
         }
 
-        public static void RefreshWorksheetControls(ListBox listBox, TextBlock textBlock, List<Worksheet> worksheets)
+        public static BindingList<Worksheet> TreeSort(BindingList<Worksheet> worksheets)
         {
-            listBox.Items.Clear();
+            var treeNode = new TreeNode(worksheets[0]);
+            for (int i = 1; i < worksheets.Count; i++)
+                treeNode.Insert(new TreeNode(worksheets[i]));
 
-            foreach (var worksheet in worksheets.OrderBy(x => x.LastOpenedDate))
-                InsertToListBox(listBox, $"{worksheet.Name}\t\t" +
-                    $"Tasks: {(worksheet.Tasks == null ? 0 : worksheet.Tasks.Count)}\t\t" +
-                    $"{(worksheet.LastOpenedDate == DateTime.Today ? 0 : (DateTime.Today - worksheet.LastOpenedDate).Days)} days ago");
-
-            textBlock.Text = $"Worksheets: {worksheets.Count.ToString()}";
+            return treeNode.Transform();
         }
     }
 }

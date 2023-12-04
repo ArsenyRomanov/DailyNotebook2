@@ -24,6 +24,8 @@ namespace DailyNotebook.Services
         {
             modelBuilder.Entity<Task>().Ignore(x => x.DateRange);
             modelBuilder.Entity<Subtask>().Ignore(x => x.DateRange);
+            modelBuilder.Entity<Worksheet>().Ignore(x => x.LastOpenedString);
+            modelBuilder.Entity<Worksheet>().Ignore(x => x.TasksCount);
         }
     }
 }

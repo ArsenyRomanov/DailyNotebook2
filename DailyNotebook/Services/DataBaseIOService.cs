@@ -1,8 +1,8 @@
 ﻿using DailyNotebook.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 
 namespace DailyNotebook.Services
@@ -30,11 +30,12 @@ namespace DailyNotebook.Services
             }
         }
 
-        public static List<Worksheet> LoadWorksheets()
+        public static BindingList<Worksheet> LoadWorksheets()
         {
-            var worksheets = new List<Worksheet>();
+            var worksheets = new BindingList<Worksheet>();
             using (ApplicationContext db = new ApplicationContext())
-                worksheets = db.Worksheets.Include(x => x.Tasks).ToList();
+                foreach (var worksheet in db.Worksheets.Include(x => x.Tasks))
+                    worksheets.Add(worksheet);
             return worksheets;
         }
 

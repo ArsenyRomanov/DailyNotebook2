@@ -18,6 +18,8 @@ namespace DailyNotebook
             Left = menuLeft + menuWidth/2 - Width/2;
 
             worksheet = newWorksheet;
+
+            DataContext = worksheet;
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -28,7 +30,8 @@ namespace DailyNotebook
         private void CreateButton_Click(object sender, RoutedEventArgs e)
         {
             worksheet.Name = WorksheetNameTextBox.Text;
-            Close();
+            if (!worksheet.HasErrors)
+                Close();
         }
     }
 }
